@@ -1,19 +1,56 @@
 // 326627635 | adi.peisach@gmail.com
+#ifndef CATAN_TILE_HPP
+#define CATAN_TILE_HPP
+#include <utility>
 #include <vector>
 #include <memory>
-#include "../Buildings/Village.hpp"
+#include <stdexcept>
+#include "../Buildings/Settlement.hpp"
+#include "../Buildings/Road.hpp"
 
-using std::vector, std::unique_ptr;
+using std::vector;
+using std::unique_ptr;
+using std::make_unique;
+
+enum class Direction : int { // TODO move
+    North = 0,
+    NorthEast = 1,
+    East = 2,
+    SouthEast = 3,
+    South = 4,
+    SouthWest= 5,
+    West = 6,
+    NorthWest = 7
+};
 
 class Tile {
-private:
+protected:
+    string symbol;
+    unsigned int diceNumber;
+    unsigned int product;
+    vector<Settlement*> settlements;
+    vector<Road*> roads;
 
-    vector<vector<unique_ptr<Village>>> settlements;
+    unsigned int directionToSettlementIndex(Direction) const;
+    unsigned int directionToRoadIndex(Direction) const;
 
 public:
 
-    Tile();
-    virtual ~Tile() = default;
+    Tile(vector<Settlement*>& set, vector<Road*>& r)
+            : symbol("🏜"), diceNumber(0), product(9), settlements(std::move(set)), roads(std::move(r)) {}
+    Tile(string s, unsigned int n, unsigned int p, vector<Settlement*>& set, vector<Road*>& r)
+    : symbol(std::move(s)), diceNumber(n), product(p), settlements(std::move(set)), roads(std::move(r)) {}
 
-    virtual void addProduct();
+
+    virtual Settlement* getSettlement(Direction d) const { return settlements[directionToSettlementIndex(d)]; };
+    virtual Road* getRoad(Direction d) const { return roads[directionToRoadIndex(d)]; }
+
+    void placeSettlement(Direction, Player&);
+    void upgradeSettlement(Direction);
+    void placeRoad(Direction, Player&);
+    virtual void produce();
+
+    virtual string toString() { return symbol; }
 };
+
+#endif

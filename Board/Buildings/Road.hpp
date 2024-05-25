@@ -1,6 +1,30 @@
 // 326627635 | adi.peisach@gmail.com
-#include "Building.hpp"
+#ifndef CATAN_ROAD_HPP
+#define CATAN_ROAD_HPP
+#include "../../Player.hpp"
 
-class Road : public Building {
+using std::string;
+
+enum class Oriention : char {
+    Vertical = '|',
+    DiagonalLeft = '\\',
+    DiagonalRight = '/'
+};
+
+class Road {
+private:
+    bool built = false;
+    Oriention orientation;
+    Player* player = nullptr;
+
+public:
+    explicit Road(Oriention orientation) { this->orientation = orientation; }
+
+    void buildRoad(Player& p) { player = &p; built = true; }
+
+    bool isBuilt() const { return built; };
+    string toString() const;
 
 };
+
+#endif
