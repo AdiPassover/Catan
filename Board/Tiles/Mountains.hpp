@@ -5,7 +5,8 @@
 
 class Mountains : public Tile {
 public:
-    Mountains(unsigned int n, vector<Settlement*>& set, vector<Road*>& r) : Tile("🪨",n,STONE,set,r) {}
+    Mountains(unsigned int n, vector<Settlement*>& set, vector<Road*>& r)
+    : Tile(Constants::STONE_ICON,n,Constants::STONE,set,r) {}
 
 };
 

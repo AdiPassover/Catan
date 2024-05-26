@@ -13,6 +13,8 @@ private:
 public:
     Settlement() { level = 0; }
 
+    Player* getOwner() const { return player; }
+
     unsigned int getLevel() const { return level; }
     void receiveProducts(unsigned int product);
     bool isBuilt() const { return level > 0; }

@@ -25,6 +25,7 @@ private:
     const vector<unsigned int> TILES_NUMBERS = {10,2,9,12,6,4,10,9,11,0,3,8,8,3,4,5,5,6,11};
     unsigned int robberPos = 9;
 
+    bool distanceRule(char tile, Direction direction) const;
     void initRoads();
     void initTiles();
     void drawTop(unsigned int index, vector<vector<string>>& mat, unsigned int topI, unsigned int topJ) const;
@@ -35,6 +36,12 @@ public:
     Board();
 
     Tile* getTile(char c) const;
+
+    bool canPlaceSettlement(Player&, char, Direction) const;
+    bool canUpgradeSettlement(Player&, char, Direction) const;
+    bool canPlaceRoad(Player&, char, Direction) const;
+    bool canPlaceFirstSettlement(char, Direction) const;
+    bool canPlaceFirstRoad(Player& p, char, Direction) const;
 
     void placeSettlement(Player&, char, Direction);
     void upgradeSettlement(char, Direction);

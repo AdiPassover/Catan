@@ -20,6 +20,8 @@ private:
 public:
     explicit Road(Oriention orientation) { this->orientation = orientation; }
 
+    Player* getOwner() const { return player; }
+
     void buildRoad(Player& p) { player = &p; built = true; }
 
     bool isBuilt() const { return built; };

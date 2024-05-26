@@ -2,11 +2,12 @@
 #include "Settlement.hpp"
 
 void Settlement::upgradeToCity() {
+    if (level != 1) throw std::invalid_argument("Cannot upgrade to city");
     level = 2;
 }
 
-
 void Settlement::buildVillage(Player& p) {
+    if (level != 0) throw std::invalid_argument("Cannot build village");
     level = 1;
     player = &p;
 }
@@ -17,7 +18,7 @@ string Settlement::toString() const {
         ans = player->getColor() + "🏘";
     if (level == 2)
         ans = player->getColor() + "🏙";
-    return ans + RESET;
+    return ans + Constants::RESET;
 }
 
 void Settlement::receiveProducts(unsigned int product) {

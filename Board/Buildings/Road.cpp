@@ -4,6 +4,6 @@
 string Road::toString() const {
     string ans = std::to_string((char)orientation);
     if (isBuilt())
-        return player->getColor() + ans + RESET;
+        return player->getColor() + ans + Constants::RESET;
     return ans;
 }

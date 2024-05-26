@@ -5,7 +5,8 @@
 
 class Forest : public Tile {
 public:
-    Forest(unsigned int n, vector<Settlement*>& set, vector<Road*>& r) : Tile("🌲",n,WOOD,set,r) {}
+    Forest(unsigned int n, vector<Settlement*>& set, vector<Road*>& r)
+    : Tile(Constants::WOOD_ICON,n,Constants::WOOD,set,r) {}
 
 };
 

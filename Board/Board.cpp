@@ -109,15 +109,10 @@ void Board::placeRoad(Player& p, char c, Direction direction) {
 }
 
 void Board::drawTop(unsigned int index, vector<vector<string>>& mat, unsigned int topI, unsigned int topJ) const {
-    std::cout << tiles[index]->toString() << std::endl;
-    std::cout << tiles[index]->getSettlement(Direction::North) << std::endl;
-    std::cout << tiles[index]->getSettlement(Direction::SouthEast) << std::endl;
-
     mat[topI][topJ] = tiles[index]->getSettlement(Direction::North)->toString();
     if (tiles[index]->getSettlement(Direction::North)->isBuilt()) { mat[topI][topJ+1] = ""; mat[topI][topJ-1] = ""; }
     mat[topI+2][topJ+2] = tiles[index]->getSettlement(Direction::NorthEast)->toString();
     if (tiles[index]->getSettlement(Direction::NorthEast)->isBuilt()) { mat[topI+2][topJ+3]=""; mat[topI+2][topJ+1]=""; }
-    std::cout << "sets done" << std::endl;
 
     mat[topI+1][topJ-1] = "/";
     if (tiles[index]->getRoad(Direction::NorthWest)->isBuilt())
@@ -169,29 +164,24 @@ void Board::drawBottom(unsigned int index, vector<vector<string>>& mat, unsigned
 }
 
 string Board::toString() const {
-    std::cout << "toString() started" << std::endl;
     vector<vector<string>> rows(23, vector<string>(21, " ")); // TODO change name
 
-    std::cout << "tops started" << std::endl;
     vector<vector<unsigned int>> tops = {
             {0,6},{0,10},{0,14},{4,4},{4,8},{4,12},{4,16},{8,2},{8,6},{8,10},{8,14},{8,18},{12,4},{12,8},{12,12},{12,16},{16,6},{16,10},{16,14}
     };
     for (unsigned int i = 0; i < tops.size(); i++) {
         drawTop(i, rows, tops[i][0], tops[i][1]);
     }
-    std::cout << "tops done" << std::endl;
 
     vector<vector<unsigned int>> lefts = {{2,4,0},{6,2,3},{10,0,7},{14,2,12},{18,4,16}};
     for (unsigned int i = 0; i < lefts.size(); i++) {
         drawLeft(lefts[i][2], rows, lefts[i][0], lefts[i][1]);
     }
-    std::cout << "lefts done" << std::endl;
 
     vector<vector<unsigned int>> bottoms = {{22,6,16},{22,10,17},{22,14,18}};
     for (unsigned int i = 0; i < bottoms.size(); i++) {
         drawBottom(bottoms[i][2], rows, bottoms[i][0], bottoms[i][1]);
     }
-    std::cout << "bottoms done" << std::endl;
 
     rows[12][0] = tiles[7]->getSettlement(Direction::SouthWest)->toString();
     if (tiles[7]->getSettlement(Direction::SouthWest)->isBuilt()) { rows[12][1] = ""; }
@@ -225,4 +215,118 @@ string Board::toString() const {
         s.append("\n");
     }
     return s;
+}
+
+const vector<vector<char>> DIRECTION_TILES = {
+        {},                                                                            // north
+        {'x','x','x','a','b','c','x','d','e','f','g','x','i','j','k','l','n','o','p'}, // north east
+        {'b','c','x','e','f','g','x','i','j','k','l','x','n','o','p','x','r','s','x'}, // east
+        {'e','f','g','i','j','k','l','m','n','o','p','x','q','r','s','x','x','x','x'}, // south east
+        {},                                                                            // south
+        {'d','e','f','h','i','j','k','x','m','n','o','p','x','q','r','s','x','x','x'}, // south west
+        {'x','a','b','x','d','e','f','x','h','i','j','k','x','m','n','o','x','r','s'}, // west
+        {'x','x','x','x','a','b','c','x','d','e','f','g','h','i','j','k','m','n','o'}  // north west
+};
+
+bool Board::distanceRule(char tile, Direction direction) const {
+    unsigned int index = (unsigned int)(tile-'a');
+    if (tiles[index]->getSettlement(direction)->isBuilt())
+        return false;
+    if (tiles[index]->getSettlement(Directions::sum(direction,2))->isBuilt() ||
+        tiles[index]->getSettlement(Directions::sum(direction,-2))->isBuilt())
+        return false;
+    return true;
+}
+
+bool Board::canPlaceSettlement(Player& p, char tile, Direction direction) const {
+    if (!distanceRule(tile,direction))
+        return false;
+
+    unsigned int index = (unsigned int)(tile-'a');
+
+    char tile2 = DIRECTION_TILES[(unsigned int)(int)(Directions::sum(direction,1))][index];
+    Direction d2 = Directions::sum(Directions::opposite(direction),-2);
+    if (tile2 != 'x' && !distanceRule(tile2,d2))
+        return false;
+
+    char tile3 = DIRECTION_TILES[(unsigned int)(int)(Directions::sum(direction,-1))][index];
+    Direction d3 = Directions::sum(Directions::opposite(direction),2);
+    if (tile3 != 'x' && !distanceRule(tile3,d3))
+        return false;
+
+    if (tiles[index]->getRoad(Directions::sum(direction,1))->getOwner() != &p &&
+        tiles[index]->getRoad(Directions::sum(direction,-1))->getOwner() != &p) {
+        if (tile2=='x' && tile3=='x') return false;
+        if (tile2!='x') {
+            unsigned int index2 = (unsigned int)(tile2-'a');
+            if (tiles[index2]->getRoad(Directions::sum(d2,1))->getOwner() != &p &&
+                tiles[index2]->getRoad(Directions::sum(d2,-1))->getOwner() != &p)
+                return false;
+        } else {
+            unsigned int index3 = (unsigned int)(tile3-'a');
+            if (tiles[index3]->getRoad(Directions::sum(d3,1))->getOwner() != &p &&
+                tiles[index3]->getRoad(Directions::sum(d3,-1))->getOwner() != &p)
+                return false;
+        }
+    }
+
+    return true;
+}
+
+bool Board::canUpgradeSettlement(Player& p, char tile, Direction d) const {
+    return tiles[(unsigned int)(tile-'a')]->getSettlement(d)->getLevel() == 1 &&
+        tiles[(unsigned int)(tile-'a')]->getSettlement(d)->getOwner() == &p;
+}
+
+bool Board::canPlaceRoad(Player& p, char tile, Direction d) const {
+    if (d==Direction::North || d==Direction::South)
+        return false;
+    unsigned int index = (unsigned int)(tile-'a');
+    if (tiles[index]->getRoad(d)->isBuilt())
+        return false;
+    if (tiles[index]->getSettlement(Directions::sum(d,1))->getOwner() != &p &&
+        tiles[index]->getSettlement(Directions::sum(d,-1))->getOwner() != &p) {
+        if (tiles[index]->getRoad(Directions::sum(d,2))->getOwner() != &p &&
+            tiles[index]->getRoad(Directions::sum(d,-2))->getOwner() != &p) {
+            unsigned int index2 = (unsigned int)(DIRECTION_TILES[(unsigned int)(int)d][index]-'a');
+            Direction d2 = Directions::opposite(d);
+            if (tiles[index2]->getRoad(Directions::sum(d2,2))->getOwner() != &p &&
+                tiles[index2]->getRoad(Directions::sum(d2,-2))->getOwner() != &p)
+                return false;
+        }
+    }
+    return true;
+}
+
+bool Board::canPlaceFirstSettlement(char tile, Direction direction) const {
+    unsigned int index = (unsigned int)(tile-'a');
+    if (tiles[index]->getSettlement(direction)->isBuilt())
+        return false;
+
+    if (!distanceRule(tile,direction))
+        return false;
+
+
+    char tile2 = DIRECTION_TILES[(unsigned int)(int)(Directions::sum(direction,1))][index];
+    Direction d2 = Directions::sum(Directions::opposite(direction),-2);
+    if (tile2 != 'x' && !distanceRule(tile2,d2))
+        return false;
+
+    char tile3 = DIRECTION_TILES[(unsigned int)(int)(Directions::sum(direction,-1))][index];
+    Direction d3 = Directions::sum(Directions::opposite(direction),2);
+    if (tile3 != 'x' && !distanceRule(tile3,d3))
+        return false;
+    return true;
+}
+
+bool Board::canPlaceFirstRoad(Player& p, char tile, Direction d) const {
+    if (d==Direction::North || d==Direction::South)
+        return false;
+    unsigned int index = (unsigned int)(tile-'a');
+    if (tiles[index]->getRoad(d)->isBuilt())
+        return false;
+    if (tiles[index]->getSettlement(Directions::sum(d,1))->getOwner() != &p &&
+        tiles[index]->getSettlement(Directions::sum(d,-1))->getOwner() != &p)
+        return false;
+    return true;
 }

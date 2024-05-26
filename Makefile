@@ -1,12 +1,13 @@
 # 326627635 | adi.peisach@gmail.com
 
-CXX=clang
+CXX=clang++
 CXXFLAGS=-std=c++14 -Werror -Wsign-conversion
 VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all  --error-exitcode=99
 
+DOCTEST_INCLUDE = -I /usr/include/doctest
 BUILDING_SOURCES = Board/Buildings/Road.cpp Board/Buildings/Settlement.cpp
-TILES_SOURCES = Board/Tiles/Field.cpp Board/Tiles/Forest.cpp Board/Tiles/Mine.cpp Board/Tiles/Mountains.cpp Board/Tiles/Pasture.cpp Board/Tiles/Tile.cpp
-CODE_SOURCES =  $(BUILDING_SOURCES) $(TILES_SOURCES) Board/Board.cpp Cards/Card.cpp Player.cpp Demo.cpp
+TILES_SOURCES = Board/Tiles/Field.cpp Board/Tiles/Forest.cpp Board/Tiles/Mine.cpp Board/Tiles/Mountains.cpp Board/Tiles/Pasture.cpp Board/Tiles/Tile.cpp Board/Tiles/Direction.cpp
+CODE_SOURCES = $(BUILDING_SOURCES) $(TILES_SOURCES) Board/Board.cpp Cards/Card.cpp Player.cpp Demo.cpp Game.cpp
 CODE_HEADERS = $(subst .cpp,.h,$(CODE_SOURCES))
 CODE_OBJECTS = $(subst .cpp,.o,$(CODE_SOURCES))
 TEST_SOURCES = Board/TestBoard.cpp
@@ -21,7 +22,7 @@ demo: $(CODE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o demo -lstdc++
 
 test: $(TEST_OBJECTS) $(CODE_OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o test -lstdc++ -lm
+	$(CXX) $(CXXFLAGS) $^ -o test -lstdc++ -lm $(DOCTEST_INCLUDE)
 
 tidy:
 	clang-tidy $(CODE_SOURCES) \

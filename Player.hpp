@@ -5,27 +5,21 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include "Constants.hpp"
+#include "Cards/Card.hpp"
 
 using std::string;
 using std::vector;
 
-static const unsigned int BRICK = 0; // TODO: move these
-static const unsigned int WOOD  = 1;
-static const unsigned int STONE = 2;
-static const unsigned int WHEAT = 3;
-static const unsigned int WOOL  = 4;
-
-const string RESET = "\033[0m";
-const string RED = "\033[31m";
-const string GREEN = "\033[32m";
-const string YELLOW = "\033[33m";
-const string BLUE = "\033[34m";
-
 class Player {
 private:
     string name;
+    unsigned int id;
     vector<unsigned int> wallet;
+    vector<Card> cards;
     string color;
+    unsigned int points;
+    unsigned int numKnights;
 
     static unsigned int playerNum;
 
@@ -33,10 +27,19 @@ public:
     Player(string n);
 
     string getName() const { return name; }
+    unsigned int getId() const { return id; }
     string getColor() const { return color; }
+    unsigned int getPoints() const { return points; }
+    unsigned int getKnights() const { return numKnights; }
+
+    void addPoints(unsigned int p) { points += p; }
+
+    bool canAfford(vector<unsigned int> resources) const;
+    void pay(vector<unsigned int> resources);
 
     unsigned int numProducts(unsigned int product) const { return wallet[product]; }
     void receiveProduct(unsigned int product, unsigned int num) { wallet[product] += num; }
+    void receiveResources(vector<unsigned int> resources);
 
 };
 

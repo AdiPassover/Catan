@@ -5,7 +5,8 @@
 
 class Mine : public Tile {
 public:
-    Mine(unsigned int n, vector<Settlement*>& set, vector<Road*>& r) : Tile("🧱",n,BRICK,set,r) {}
+    Mine(unsigned int n, vector<Settlement*>& set, vector<Road*>& r)
+    : Tile(Constants::BRICK_ICON,n,Constants::BRICK,set,r) {}
 
 };
 

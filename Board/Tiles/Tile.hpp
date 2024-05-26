@@ -7,21 +7,12 @@
 #include <stdexcept>
 #include "../Buildings/Settlement.hpp"
 #include "../Buildings/Road.hpp"
+#include "direction.hpp"
+#include "../../Constants.hpp"
 
 using std::vector;
 using std::unique_ptr;
 using std::make_unique;
-
-enum class Direction : int { // TODO move
-    North = 0,
-    NorthEast = 1,
-    East = 2,
-    SouthEast = 3,
-    South = 4,
-    SouthWest= 5,
-    West = 6,
-    NorthWest = 7
-};
 
 class Tile {
 protected:
@@ -39,7 +30,7 @@ public:
     Tile(vector<Settlement*>& set, vector<Road*>& r)
             : symbol("🏜"), diceNumber(0), product(9), settlements(std::move(set)), roads(std::move(r)) {}
     Tile(string s, unsigned int n, unsigned int p, vector<Settlement*>& set, vector<Road*>& r)
-    : symbol(std::move(s)), diceNumber(n), product(p), settlements(std::move(set)), roads(std::move(r)) {}
+        : symbol(std::move(s)), diceNumber(n), product(p), settlements(std::move(set)), roads(std::move(r)) {}
 
 
     virtual Settlement* getSettlement(Direction d) const { return settlements[directionToSettlementIndex(d)]; };

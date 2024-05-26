@@ -5,7 +5,8 @@
 
 class Pasture : public Tile {
 public:
-    Pasture(unsigned int n, vector<Settlement*>& set, vector<Road*>& r) : Tile("🐑",n,WOOL,set,r) {}
+    Pasture(unsigned int n, vector<Settlement*>& set, vector<Road*>& r) :
+    Tile(Constants::WOOL_ICON,n,Constants::WOOL,set,r) {}
 
 };
 
