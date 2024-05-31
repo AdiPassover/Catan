@@ -23,6 +23,12 @@ namespace Constants {
     const string STONE_ICON = "🪨";
     const string RESOURCES_ICONS = BRICK_ICON+" "+WOOD_ICON+" "+WOOL_ICON+" "+WHEAT_ICON+" "+STONE_ICON;
 
+    const string ROBBER_ICON = "🥷";
+    const string DESERT_ICON = "🏜";
+    const string VACANT_ICON = "■";
+    const string VILLAGE_ICON = "🏘";
+    const string CITY_ICON = "🏙";
+
     const string RESET = "\033[0m";
     const string RED = "\033[31m";
     const string GREEN = "\033[32m";

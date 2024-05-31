@@ -21,7 +21,7 @@ unsigned int Tile::directionToSettlementIndex(Direction d) const {
     } else if (d == Direction::NorthWest) {
         return 5;
     }
-    throw std::invalid_argument("Invalid direction for settlement on tile");
+    throw std::invalid_argument("Invalid direction for settlement on tile " + std::to_string((int)d));
 }
 
 unsigned int Tile::directionToRoadIndex(Direction d) const {

@@ -17,7 +17,54 @@ Direction Directions::stringToDirection(string s) {
 }
 
 Direction Directions::sum(Direction d, int i) {
-    return static_cast<Direction>((static_cast<int>(d) + i) % 8);
+    return static_cast<Direction>((static_cast<int>(d) + i + 8) % 8);
+}
+
+Direction Directions::sumSet(Direction d, int i) {
+    int sign = i / std::abs(i);
+    Direction ans = sum(d,i);
+    if (ans == Direction::West || ans == Direction::East)
+        ans = sum(ans,sign);
+    return ans;
+}
+
+Direction Directions::sumRoad(Direction d, int i) {
+    int sign = i / std::abs(i);
+    Direction ans = sum(d,i);
+    if (ans == Direction::North || ans == Direction::South)
+        ans = sum(ans,sign);
+    return ans;
+}
+
+vector<Direction> Directions::nearestRoads(Direction d) {
+    vector<Direction> ans(2);
+    if (d == Direction::North || d == Direction::South) {
+        ans[0] = sum(d,-1);
+        ans[1] = sum(d,1);
+    } else if (d == Direction::NorthEast || d == Direction::SouthWest) {
+        ans[0] = d;
+        ans[1] = sum(d,1);
+    } else {
+        ans[0] = sum(d,-1);
+        ans[1] = d;
+    }
+    return ans;
+}
+
+vector<Direction> Directions::nearestSettlements(Direction d) {
+    vector<Direction> ans(2);
+    if (d == Direction::East || d == Direction::West) {
+        ans[0] = sum(d,-1);
+        ans[1] = sum(d,1);
+    } else if (d == Direction::NorthEast || d == Direction::SouthWest) {
+        ans[0] = sum(d,-1);
+        ans[1] = d;
+    } else {
+        ans[0] = d;
+        ans[1] = sum(d,1);
+    }
+    return ans;
+
 }
 
 Direction Directions::opposite(Direction d) {

@@ -36,7 +36,7 @@ void Game::upgradeSettlement(Player& p, string line) {
     else throw std::invalid_argument("Cannot upgrade settlement");
 }
 
-void Game::placeRoad(Player& p, string line, bool first) {
+void Game::placeRoad(Player& p, string line) {
     char tile = line[0];
     if (tile < 'a' || tile > 's') throw std::invalid_argument("Invalid tile letter");
     Direction dire = Directions::stringToDirection(line.substr(2));
@@ -45,9 +45,7 @@ void Game::placeRoad(Player& p, string line, bool first) {
         throw std::invalid_argument("Player cannot afford to place road");
     p.pay(Constants::ROAD_COST);
 
-    if (!first && board.canPlaceRoad(p, tile, dire))
-        board.placeRoad(p, tile, dire);
-    else if (first && board.canPlaceFirstRoad(p, tile, dire))
+    if (board.canPlaceRoad(p, tile, dire))
         board.placeRoad(p, tile, dire);
     else throw std::invalid_argument("Cannot place road");
 }
@@ -111,9 +109,6 @@ void Game::makeTurn(Player& p, Turn t) {
     switch (t) {
         case Turn::FirstSettlement:
             placeSettlement(p, line,true);
-            break;
-        case Turn::FirstRoad:
-            placeRoad(p, line,true);
             break;
         case Turn::BuildSettlement:
             placeSettlement(p, line);

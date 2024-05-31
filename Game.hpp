@@ -12,7 +12,6 @@ using std::endl;
 
 enum class Turn {
     FirstSettlement,
-    FirstRoad,
 
     BuildSettlement,
     BuildRoad,
@@ -45,7 +44,7 @@ public:
 
     void placeSettlement(Player&, string, bool first = false);
     void upgradeSettlement(Player&, string);
-    void placeRoad(Player&, string, bool first = false);
+    void placeRoad(Player&, string);
 
     void tradePlayer(Player&, string);
     void tradeBank(Player&, string);

@@ -26,6 +26,7 @@ public:
 
     bool isBuilt() const { return built; };
     string toString() const;
+    string orientationString() const;
 
 };
 

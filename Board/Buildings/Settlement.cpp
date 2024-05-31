@@ -13,11 +13,11 @@ void Settlement::buildVillage(Player& p) {
 }
 
 string Settlement::toString() const {
-    string ans = "■";
+    string ans = Constants::VACANT_ICON;
     if (level == 1)
-        ans = player->getColor() + "🏘";
+        ans = player->getColor() + Constants::VILLAGE_ICON;
     if (level == 2)
-        ans = player->getColor() + "🏙";
+        ans = player->getColor() + Constants::CITY_ICON;
     return ans + Constants::RESET;
 }
 

@@ -3,25 +3,6 @@
 
 unsigned int Player::playerNum = 0;
 
-Player::Player(string n) {
-    name.assign(n);
-    wallet.resize(5,0);
-    points = 0;
-    numKnights = 0;
-    id = playerNum;
-    if (playerNum == 0)
-        color = Constants::BLUE;
-    else if (playerNum == 1)
-        color = Constants::RED;
-    else if (playerNum == 2)
-        color = Constants::GREEN;
-    else if (playerNum == 3)
-        color = Constants::YELLOW;
-    else
-        throw std::out_of_range("Too many players!");
-    playerNum++;
-}
-
 bool Player::canAfford(vector<unsigned int> resources) const {
     for (size_t i = 0; i < resources.size(); i++)
         if (wallet[i] < resources[i]) return false;
@@ -37,4 +18,10 @@ void Player::pay(vector<unsigned int> resources) {
 void Player::receiveResources(vector<unsigned int> resources) {
     for (size_t i = 0; i < resources.size(); i++)
         wallet[i] += resources[i];
+}
+
+unsigned int Player::numResources() const {
+    unsigned int sum = 0;
+    for (unsigned int i = 0; i < wallet.size(); i++) sum += wallet[i];
+    return sum;
 }

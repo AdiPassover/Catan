@@ -28,7 +28,7 @@ protected:
 public:
 
     Tile(vector<Settlement*>& set, vector<Road*>& r)
-            : symbol("🏜"), diceNumber(0), product(9), settlements(std::move(set)), roads(std::move(r)) {}
+            : symbol(Constants::DESERT_ICON), diceNumber(0), product(9), settlements(std::move(set)), roads(std::move(r)) {}
     Tile(string s, unsigned int n, unsigned int p, vector<Settlement*>& set, vector<Road*>& r)
         : symbol(std::move(s)), diceNumber(n), product(p), settlements(std::move(set)), roads(std::move(r)) {}
 
