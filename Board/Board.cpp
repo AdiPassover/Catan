@@ -102,8 +102,8 @@ void Board::placeSettlement(Player& p, char c, Direction direction) {
     tiles[(unsigned int)(c-'a')]->placeSettlement(direction, p);
 }
 
-void Board::upgradeSettlement(char c, Direction direction) {
-    tiles[(unsigned int)(c-'a')]->upgradeSettlement(direction);
+void Board::upgradeSettlement(Player& p, char c, Direction direction) {
+    tiles[(unsigned int)(c-'a')]->upgradeSettlement(direction,p);
 }
 
 void Board::placeRoad(Player& p, char c, Direction direction) {
@@ -312,4 +312,11 @@ bool Board::canPlaceFirstSettlement(char tile, Direction direction) const {
     if (tile3 != 'x' && !distanceRule(tile3,d3))
         return false;
     return true;
+}
+
+void Board::produce(unsigned int diceNum) {
+    for (unsigned int i = 0; i < TILES_NUMBERS.size(); i++) {
+        if (TILES_NUMBERS[i] == diceNum)
+            tiles[i]->produce();
+    }
 }

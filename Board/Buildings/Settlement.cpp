@@ -1,15 +1,17 @@
 // 326627635 | adi.peisach@gmail.com
 #include "Settlement.hpp"
 
-void Settlement::upgradeToCity() {
+void Settlement::upgradeToCity(Player& p) {
     if (level != 1) throw std::invalid_argument("Cannot upgrade to city");
     level = 2;
+    p.addPoints(1);
 }
 
 void Settlement::buildVillage(Player& p) {
     if (level != 0) throw std::invalid_argument("Cannot build village");
     level = 1;
     player = &p;
+    p.addPoints(1);
 }
 
 string Settlement::toString() const {

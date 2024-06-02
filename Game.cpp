@@ -1,52 +1,68 @@
 // 326627635 | adi.peisach@gmail.com
 #include "Game.hpp"
+#include "Board/Board.hpp"
 
-unsigned int Game::rollDice() {
+unsigned int Game::rollDice(unsigned int res) {
+    if (res != 0) return res;
     return (unsigned int)(rand()%6 + rand()%6 + 2);
 }
 
-void Game::placeSettlement(Player& p, string line, bool first) {
-    char tile = line[0];
+void Game::placeSettlement(Player& p, bool first) {
+    cout << p.getName() << " is placing a settlement. Enter tile and direction (the direction in one word)" << endl;
+    string line;
+    char tile;
+    *input >> tile >> line;
+    cout << "input: " << tile << " " << line << endl;
+
     if (tile < 'a' || tile > 's') throw std::invalid_argument("Invalid tile letter");
-    Direction dire = Directions::stringToDirection(line.substr(2));
+    Direction dire = Directions::stringToDirection(line);
 
-    if (!p.canAfford(Constants::SETTLEMENT_COST))
+    if (!first && !p.canAfford(Constants::SETTLEMENT_COST))
         throw std::invalid_argument("Player cannot afford to place settlement");
-    p.pay(Constants::SETTLEMENT_COST);
+    if (!first) p.pay(Constants::SETTLEMENT_COST);
 
 
-    if (!first && board.canPlaceSettlement(p, tile, dire))
-        board.placeSettlement(p, tile, dire);
-    else if (first && board.canPlaceFirstSettlement(tile, dire))
-        board.placeSettlement(p, tile, dire);
+    if (!first && board->canPlaceSettlement(p, tile, dire))
+        board->placeSettlement(p, tile, dire);
+    else if (first && board->canPlaceFirstSettlement(tile, dire))
+        board->placeSettlement(p, tile, dire);
     else throw std::invalid_argument("Cannot place settlement");
 }
 
-void Game::upgradeSettlement(Player& p, string line) {
-    char tile = line[0];
+void Game::upgradeSettlement(Player& p) {
+    cout << p.getName() << " is upgrading a settlement. Enter tile and direction (the direction in one word)" << endl;
+    string line;
+    char tile;
+    *input >> tile >> line;
+
     if (tile < 'a' || tile > 's') throw std::invalid_argument("Invalid tile letter");
-    Direction dire = Directions::stringToDirection(line.substr(2));
+    Direction dire = Directions::stringToDirection(line);
 
     if (!p.canAfford(Constants::CITY_COST))
         throw std::invalid_argument("Player cannot afford to upgrade settlement");
     p.pay(Constants::CITY_COST);
 
-    if (board.canUpgradeSettlement(p, tile, dire))
-        board.upgradeSettlement(tile, dire);
+    if (board->canUpgradeSettlement(p, tile, dire))
+        board->upgradeSettlement(p, tile, dire);
     else throw std::invalid_argument("Cannot upgrade settlement");
 }
 
-void Game::placeRoad(Player& p, string line) {
-    char tile = line[0];
+void Game::placeRoad(Player& p, bool first) {
+    cout << p.getName() <<  " is placing a road. Enter tile and direction (the direction in one word)" << endl;
+    string line;
+    char tile;
+    *input >> tile >> line;
+    cout << "input: " << tile << " " << line << endl;
+
     if (tile < 'a' || tile > 's') throw std::invalid_argument("Invalid tile letter");
-    Direction dire = Directions::stringToDirection(line.substr(2));
+    Direction dire = Directions::stringToDirection(line);
 
-    if (!p.canAfford(Constants::ROAD_COST))
+    if (!first && !p.canAfford(Constants::ROAD_COST))
         throw std::invalid_argument("Player cannot afford to place road");
-    p.pay(Constants::ROAD_COST);
+    if (!first) p.pay(Constants::ROAD_COST);
 
-    if (board.canPlaceRoad(p, tile, dire))
-        board.placeRoad(p, tile, dire);
+    if (board->canPlaceRoad(p, tile, dire))
+        board->placeRoad(p, tile, dire);
     else throw std::invalid_argument("Cannot place road");
 }
 
@@ -54,47 +70,83 @@ vector<unsigned int> Game::namePrice() const {
     cout << "Enter price" << endl;
     cout << Constants::RESOURCES_ICONS << endl;
     vector<unsigned int> price(5,0);
-    cin >> price[0] >> price[1] >> price[2] >> price[3] >> price[4];
+    *input >> price[0] >> price[1] >> price[2] >> price[3] >> price[4];
     return price;
 }
 
-void Game::tradePlayer(Player& p, string line) {
-    // TODO
-}
+void Game::tradeResources(Player& p) {
+    string line;
+    cout << "You are selling: " << endl;
+    vector<unsigned int> sell = namePrice();
+    if (!p.canAfford(sell)) throw std::invalid_argument("Player cannot afford to sell");
+    cout << "You are buying: " << endl;
+    vector<unsigned int> buy = namePrice();
 
-void Game::tradeBank(Player &, std::string) {
-    // TODO
+    cout << "Enter player name" << endl;
+    string name;
+    *input >> name;
+    for (unsigned int i = 0; i < numPlayers(); i++) {
+        if (players[i].getName() == name) {
+            if (!players[i].canAfford(buy)) throw std::invalid_argument("Player cannot afford to buy");
+            cout << players[i].getName() << " do you agree? (y/n)" << endl;
+            *input >> line;
+            if (line != "y") {
+                cout << "Trade declined" << endl;
+                return;
+            }
+            p.pay(sell);
+            p.receiveResources(buy);
+            players[i].pay(buy);
+            players[i].receiveResources(sell);
+            return;
+        }
+    }
+    throw std::invalid_argument("Player not found");
 }
 
 void Game::buyCard(Player& p) {
     if (!p.canAfford(Constants::CARD_COST))
         throw std::invalid_argument("Player cannot afford to buy card");
     p.pay(Constants::CARD_COST);
-    // TODO
+    cout << "You received: " << deck[currentCard]->toString() << endl;
+    p.receiveCard(deck[currentCard++].get());
 }
 
-void Game::playCard(Player& p, string line) {
-    // TODO
+void Game::playCard(Player& p) {
+    if (p.numCards() == 0) {
+        cout << "No cards to play" << endl;
+        return;
+    }
+
+    p.printCards();
+    cout << "Enter card index" << endl;
+    unsigned int index;
+    *input >> index;
+    p.playCard(index, *this);
 }
 
 Turn Game::chooseTurn() {
+    cout << "Choose turn:" << endl;
     string line = "";
-    cout << line << endl;
-    cin >> line;
 
     while (true) {
-        cin >> line;
+        cout << "build | trade | card | end" << endl;
+        *input >> line;
         if (line == "build") {
-            cin >> line;
+            cout << "settlement | road | city" << endl;
+            *input >> line;
             if (line == "settlement") return Turn::BuildSettlement;
             if (line == "road") return Turn::BuildRoad;
             if (line == "city") return Turn::UpgradeSettlement;
         } else if (line == "trade") {
-            cin >> line;
-            if (line == "player") return Turn::TradePlayer;
-            if (line == "bank") return Turn::TradeBank;
+            cout << "resource | card | knight" << endl;
+            *input >> line;
+            if (line == "resource") return Turn::TradeResource;
+            if (line == "card") return Turn::TradeCard;
+            if (line == "knight") return Turn::TradeKnight;
         } else if (line == "card") {
-            cin >> line;
+            cout << "buy | play" << endl;
+            *input >> line;
             if (line == "buy") return Turn::BuyCard;
             if (line == "play") return Turn::PlayCard;
         } else if (line == "end") {
@@ -104,34 +156,265 @@ Turn Game::chooseTurn() {
 }
 
 void Game::makeTurn(Player& p, Turn t) {
-    string line = "";
-    std::getline(cin, line);
-    switch (t) {
-        case Turn::FirstSettlement:
-            placeSettlement(p, line,true);
-            break;
-        case Turn::BuildSettlement:
-            placeSettlement(p, line);
-            break;
-        case Turn::BuildRoad:
-            placeRoad(p, line);
-            break;
-        case Turn::UpgradeSettlement:
-            upgradeSettlement(p, line);
-            break;
-        case Turn::TradePlayer:
-            tradePlayer(p, line);
-            break;
-        case Turn::TradeBank:
-            tradeBank(p, line);
-            break;
-        case Turn::BuyCard:
-            buyCard(p);
-            break;
-        case Turn::PlayCard:
-            playCard(p, line);
-            break;
-        case Turn::EndTurn:
-            break;
+    try {
+        switch (t) {
+            case Turn::BuildSettlement:
+                placeSettlement(p);
+                break;
+            case Turn::BuildRoad:
+                placeRoad(p);
+                break;
+            case Turn::UpgradeSettlement:
+                upgradeSettlement(p);
+                break;
+            case Turn::TradeResource:
+                tradeResources(p);
+                break;
+            case Turn::TradeCard:
+                tradeCards(p);
+                break;
+            case Turn::TradeKnight:
+                tradeKnight(p);
+                break;
+            case Turn::BuyCard:
+                buyCard(p);
+                break;
+            case Turn::PlayCard:
+                playCard(p);
+                break;
+            case Turn::EndTurn:
+                break;
+        }
+    } catch (std::invalid_argument e) {
+        cout << e.what() << endl;
+    }
+}
+
+void Game::start() {
+    for (unsigned int i = 0; i < numPlayers(); i++) {
+        while (true) {
+            try {
+                placeSettlement(players[i],true);
+                break;
+            } catch (std::invalid_argument e) {
+                cout << e.what() << endl;
+            }
+        }
+        print();
+        while (true) {
+            try {
+                placeRoad(players[i],true);
+                break;
+            } catch (std::invalid_argument e) {
+                cout << e.what() << endl;
+            }
+        }
+        print();
+    }
+    for (unsigned int i = numPlayers()-1; true; i--) {
+        while (true) {
+            try {
+                placeSettlement(players[i],true);
+                break;
+            } catch (std::invalid_argument e) {
+                cout << e.what() << endl;
+            }
+        }
+        print();
+        while (true) {
+            try {
+                placeRoad(players[i],true);
+                break;
+            } catch (std::invalid_argument e) {
+                cout << e.what() << endl;
+            }
+        }
+        print();
+        if (i == 0) break;
+    }
+
+    for (unsigned int i = 2; i <= 12; i++) {
+        board->produce(i);
+    }
+
+}
+
+void Game::loseResource() {
+    for (unsigned int i = 0; i < numPlayers(); i++) {
+        if (i == currentPlayer) continue;
+        unsigned int num = players[i].numResources();
+        if (num < 7) continue;
+        cout << players[i].getName() << " must lose half their resources" << endl;
+        players[i].loseHalf();
+    }
+}
+
+void Game::startTurn(Player& p) {
+    cout << p.getName() << "'s turn" << endl;
+    unsigned int roll = rollDice();
+    cout << "Rolled " << roll << endl;
+    if (roll != 7) board->produce(roll);
+    else loseResource();
+
+    p.printWallet();
+    while (true) {
+        Turn t = chooseTurn();
+        if (t == Turn::EndTurn) break;
+        makeTurn(p, t);
+    }
+    print();
+}
+
+bool Game::isOver() {
+    for (unsigned int i = 0; i < numPlayers(); i++) {
+        if (players[i].getPoints() >= 10) {
+            cout << players[i].getName() << " wins!" << endl;
+            return true;
+        }
+    }
+    return false;
+}
+
+Game::Game(vector<string> names, bool random, const string& inputPath) : players(), deck(), isRandom(random) {
+    if (names.size() < 2) throw std::invalid_argument("Not enough players");
+    if (names.size() > 4) throw std::invalid_argument("Too many players");
+
+    if (inputPath.empty()) {
+        input = std::make_unique<std::istream>(cin.rdbuf());
+    } else {
+        auto fileStream = std::make_unique<std::ifstream>(inputPath);
+        if (!fileStream->is_open()) {
+            throw std::runtime_error("Unable to open file: " + inputPath);
+        }
+        input = std::move(fileStream);
+    }
+
+    board = std::make_unique<Board>();
+    if (isRandom)
+        srand(time(nullptr));
+    else srand(0);
+
+    for (unsigned int i = 0; i < names.size(); i++) {
+        Player p(names[i], Constants::COLORS[i]);
+        unsigned int index = (unsigned int)rand()%(players.size()+1);
+        players.insert(players.begin() + index, p);
+    }
+    print();
+    initDeck();
+
+    start();
+    while (true) {
+        startTurn(players[currentPlayer]);
+        currentPlayer++;
+        currentPlayer %= numPlayers();
+        if (isOver()) break;
+    }
+}
+
+void Game::print() const {
+    board->print();
+}
+
+void Game::initDeck() {
+    unsigned int numKnights = 3;
+    unsigned int numRoads = 3;
+    unsigned int numMonopolies = 4;
+    unsigned int numYears = 4;
+    unsigned int numPoints = 4;
+    unsigned int sum = numKnights+numRoads+numMonopolies+numYears+numPoints;
+    deck.resize(sum);
+    for (unsigned int i = 0; i < sum; i++) {
+        int r = rand()%5;
+        if (r == 0 && numKnights > 0) {
+            deck[i] = std::make_unique<KnightCard>();
+            numKnights--;
+        } else if (r == 1 && numRoads > 0) {
+            deck[i] = std::make_unique<RoadsCard>();
+            numRoads--;
+        } else if (r == 2 && numMonopolies > 0) {
+            deck[i] = std::make_unique<MonopolCard>();
+            numMonopolies--;
+        } else if (r == 3 && numYears > 0) {
+            deck[i] = std::make_unique<YearOfPlenty>();
+            numYears--;
+        } else if (r == 4 && numPoints > 0) {
+            deck[i] = std::make_unique<PointsCard>();
+            numPoints--;
+        } else i--;
+    }
+}
+
+void Game::tradeCards(Player& p) {
+    p.printCards();
+    cout << "Enter card index for selling" << endl;
+    unsigned int sellIndex;
+    *input >> sellIndex;
+    cout << "Enter player name" << endl;
+    string name;
+    *input >> name;
+    for (unsigned int i = 0; i < numPlayers(); i++) {
+        if (players[i].getName() == name) {
+            if (players[i].numCards() == 0) {
+                cout << "No cards to buy" << endl;
+                return;
+            }
+            players[i].printCards();
+            cout << "Enter card index for buying" << endl;
+            unsigned int buyIndex;
+            *input >> buyIndex;
+            cout << p.getName() << " do you agree? (y/n)" << endl;
+            string line;
+            *input >> line;
+            if (line != "y") {
+                cout << "Trade declined" << endl;
+                return;
+            }
+            Card* sell = p.loseCard(sellIndex);
+            players[i].receiveCard(sell);
+            Card* buy = players[i].loseCard(buyIndex);
+            p.receiveCard(buy);
+            return;
+        }
+    }
+}
+
+unsigned int Game::numPlayers() const {
+    return players.size();
+}
+
+Player &Game::getPlayer(unsigned int i) {
+    return players[i];
+}
+
+void Game::tradeKnight(Player& p) {
+    if (p.getKnights() == 0) {
+        cout << "No knights to trade" << endl;
+        return;
+    }
+
+    cout << "Enter player name" << endl;
+    string name;
+    *input >> name;
+    cout << "You are giving a knight for:" << endl;
+    vector<unsigned int> price = namePrice();
+
+    for (unsigned int i = 0; i < numPlayers(); i++) {
+        if (players[i].getName() == name) {
+            if (!players[i].canAfford(price))
+                throw std::invalid_argument("Player cannot afford to buy");
+
+            cout << p.getName() << " do you agree? (y/n)" << endl;
+            string line;
+            *input >> line;
+            if (line != "y") {
+                cout << "Trade declined" << endl;
+                return;
+            }
+            p.loseKnight();
+            players[i].addKnight();
+            players[i].pay(price);
+            p.receiveResources(price);
+            return;
+        }
     }
 }

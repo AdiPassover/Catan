@@ -14,7 +14,7 @@ TEST_CASE("Placing and upgrading settlements") {
 
     board.placeSettlement(p1, 'a', Direction::South);
     CHECK(board.getTile('a')->getSettlement(Direction::South)->toString() == p1.getColor()+"🏘"+Constants::RESET);
-    board.upgradeSettlement('a', Direction::South);
+    board.upgradeSettlement(p1,'a', Direction::South);
     CHECK(board.getTile('a')->getSettlement(Direction::South)->toString() == p1.getColor()+"🏙"+Constants::RESET);
 
     CHECK_THROWS(board.placeSettlement(p2, 'd', Direction::NorthEast));
@@ -22,10 +22,10 @@ TEST_CASE("Placing and upgrading settlements") {
 
     board.placeSettlement(p2, 'd', Direction::SouthWest);
     CHECK(board.getTile('d')->getSettlement(Direction::SouthWest)->toString() == p2.getColor()+"🏘"+Constants::RESET);
-    board.upgradeSettlement('d', Direction::SouthWest);
+    board.upgradeSettlement(p2,'d', Direction::SouthWest);
     CHECK(board.getTile('d')->getSettlement(Direction::SouthWest)->toString() == p2.getColor()+"🏙"+Constants::RESET);
-    CHECK_THROWS(board.upgradeSettlement('d', Direction::SouthWest));
-    CHECK_THROWS(board.upgradeSettlement('d', Direction::South));
+    CHECK_THROWS(board.upgradeSettlement(p1,'d', Direction::SouthWest));
+    CHECK_THROWS(board.upgradeSettlement(p2,'d', Direction::South));
 
 }
 
@@ -98,7 +98,7 @@ TEST_CASE("Can place settlement") {
     CHECK_FALSE(board.canUpgradeSettlement(p1,'a',Direction::SouthEast));
     CHECK(board.canUpgradeSettlement(p1,'b',Direction::NorthWest));
     CHECK_FALSE(board.canUpgradeSettlement(p2,'b',Direction::NorthWest));
-    board.upgradeSettlement('b',Direction::NorthWest);
+    board.upgradeSettlement(p2,'b',Direction::NorthWest);
     CHECK_FALSE(board.canUpgradeSettlement(p1,'b',Direction::NorthWest));
 
     board.print();

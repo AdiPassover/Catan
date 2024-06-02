@@ -11,6 +11,7 @@
 #include "Tiles/Mine.hpp"
 #include "Tiles/Mountains.hpp"
 #include "Tiles/Pasture.hpp"
+#include "../Player.hpp"
 
 using std::vector;
 using std::unique_ptr;
@@ -33,7 +34,7 @@ private:
     bool isThereRoad(Player&, char, Direction) const;
 
 public:
-    Board();
+    explicit Board();
 
     Tile* getTile(char c) const;
 
@@ -43,11 +44,13 @@ public:
     bool canPlaceFirstSettlement(char, Direction) const;
 
     void placeSettlement(Player&, char, Direction);
-    void upgradeSettlement(char, Direction);
+    void upgradeSettlement(Player&, char, Direction);
     void placeRoad(Player&, char, Direction);
 
+    void produce(unsigned int);
+
     string toString() const;
-    void print() const { std::cout << toString() << std::endl; };
+    void print() const { std::cout << toString() << std::endl; }
 
 };
 #endif

@@ -47,10 +47,10 @@ void Tile::placeSettlement(Direction d, Player& p) {
     settlements[directionToSettlementIndex(d)]->buildVillage(p);
 }
 
-void Tile::upgradeSettlement(Direction d) {
+void Tile::upgradeSettlement(Direction d, Player& p) {
     if (settlements[directionToSettlementIndex(d)]->getLevel() != 1)
         throw std::invalid_argument("Settlement not built or already a city");
-    settlements[directionToSettlementIndex(d)]->upgradeToCity();
+    settlements[directionToSettlementIndex(d)]->upgradeToCity(p);
 }
 
 void Tile::placeRoad(Direction d, Player& p) {

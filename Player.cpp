@@ -25,3 +25,37 @@ unsigned int Player::numResources() const {
     for (unsigned int i = 0; i < wallet.size(); i++) sum += wallet[i];
     return sum;
 }
+
+void Player::printWallet() const {
+    cout << color << "Points: " << points << " Knights: " << numKnights << Constants::RESET << endl;
+    cout << Constants::RESOURCES_ICONS << endl;
+    cout << color;
+    for (size_t i = 0; i < wallet.size(); i++)
+        cout << wallet[i] << "  ";
+    cout << Constants::RESET << endl;
+}
+
+void Player::printCards() const {
+    cout << "Cards: " << endl;
+    for (size_t i = 0; i < cards.size(); i++)
+        cout << i << ": " << cards[i]->toString() << " ";
+    cout << endl;
+}
+
+void Player::loseHalf() {
+    for (unsigned int i = 0; i < wallet.size(); i++)
+        wallet[i] /= 2;
+}
+
+Card* Player::loseCard(unsigned int i) {
+    if (i >= cards.size()) throw std::invalid_argument("Invalid card index");
+    Card* ret = cards[i];
+    cards.erase(cards.begin() + i);
+    return ret;
+}
+
+void Player::loseKnight() {
+    if (numKnights == 0) throw std::invalid_argument("No knights to lose");
+    if (numKnights == 3) points -= 2;
+    numKnights--;
+}

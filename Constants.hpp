@@ -30,10 +30,11 @@ namespace Constants {
     const string CITY_ICON = "🏙";
 
     const string RESET = "\033[0m";
+    const string BLUE = "\033[34m";
     const string RED = "\033[31m";
     const string GREEN = "\033[32m";
     const string YELLOW = "\033[33m";
-    const string BLUE = "\033[34m";
+    const vector<string> COLORS = {BLUE, RED, GREEN, YELLOW};
 
     const vector<unsigned int> SETTLEMENT_COST = {1, 1, 1, 1, 0};
     const vector<unsigned int> ROAD_COST = {1, 1, 0, 0, 0};

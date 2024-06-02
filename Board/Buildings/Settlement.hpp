@@ -1,13 +1,16 @@
 // 326627635 | adi.peisach@gmail.com
 #ifndef CATAN_SETTLEMENT_HPP
 #define CATAN_SETTLEMENT_HPP
+//#include <string>
+//#include <stdexcept>
+//#include "../../Constants.hpp"
 #include "../../Player.hpp"
-#include "Road.hpp"
+
+using std::string;
 
 class Settlement {
 private:
     unsigned int level;
-    vector<Road> roads;
     Player* player = nullptr;
 
 public:
@@ -20,7 +23,7 @@ public:
     bool isBuilt() const { return level > 0; }
 
     void buildVillage(Player& p);
-    void upgradeToCity();
+    void upgradeToCity(Player& p);
     string toString() const;
 
 };

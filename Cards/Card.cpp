@@ -1,5 +1,3 @@
-//
-// Created by adipe on 19/05/2024.
-//
+// 326627635 | adi.peisach@gmail.com
 
 #include "Card.hpp"

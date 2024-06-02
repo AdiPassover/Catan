@@ -37,7 +37,7 @@ public:
     virtual Road* getRoad(Direction d) const { return roads[directionToRoadIndex(d)]; }
 
     void placeSettlement(Direction, Player&);
-    void upgradeSettlement(Direction);
+    void upgradeSettlement(Direction, Player&);
     void placeRoad(Direction, Player&);
     virtual void produce();
 

@@ -3,22 +3,33 @@
 #ifndef CATAN_GAME_HPP
 #define CATAN_GAME_HPP
 
+#include <vector>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <memory>
 #include "Board/Board.hpp"
+
+class Player;
+class Card;
+class Board;
 
 using std::string;
 using std::cout;
 using std::cin;
 using std::endl;
+using std::vector;
+using std::unique_ptr;
+
 
 enum class Turn {
-    FirstSettlement,
-
     BuildSettlement,
     BuildRoad,
     UpgradeSettlement,
 
-    TradePlayer,
-    TradeBank,
+    TradeResource,
+    TradeCard,
+    TradeKnight,
 
     BuyCard,
     PlayCard,
@@ -28,31 +39,43 @@ enum class Turn {
 
 class Game {
     vector<Player> players;
-    Board board;
+    vector<unique_ptr<Card>> deck;
+    unique_ptr<Board> board;
+    unsigned int currentPlayer = 0;
+    unsigned int currentCard = 0;
+    bool isRandom = true;
+    unique_ptr<std::istream> input;
 
 private:
-    unsigned int rollDice();
+    unsigned int rollDice(unsigned int res = 0);
     vector<unsigned int> namePrice() const;
+    void loseResource();
+    void initDeck();
 
 public:
-    Game(vector<Player>& p) : players(p), board() { // TODO: empty constructor with inputs
-        srand(time(nullptr));
-    }
+    explicit Game(vector<string> names, bool random = true, const string& inputPath = "");
+
+    void start();
+    void startTurn(Player&);
+    bool isOver();
 
     Turn chooseTurn();
     void makeTurn(Player&, Turn);
 
-    void placeSettlement(Player&, string, bool first = false);
-    void upgradeSettlement(Player&, string);
-    void placeRoad(Player&, string);
+    void placeSettlement(Player&, bool first = false);
+    void upgradeSettlement(Player&);
+    void placeRoad(Player&, bool first = false);
 
-    void tradePlayer(Player&, string);
-    void tradeBank(Player&, string);
+    void tradeResources(Player&);
+    void tradeCards(Player&);
+    void tradeKnight(Player&);
 
     void buyCard(Player&);
-    void playCard(Player&, string);
+    void playCard(Player&);
 
-    void print() const { board.print(); };
+    void print() const;
+    unsigned int numPlayers() const;
+    Player& getPlayer(unsigned int i);
 };
 
 
