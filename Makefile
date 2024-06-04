@@ -11,7 +11,7 @@ TILES_SOURCES = Board/Tiles/Field.cpp Board/Tiles/Forest.cpp Board/Tiles/Mine.cp
 CODE_SOURCES = $(BUILDING_SOURCES) $(TILES_SOURCES) Board/Board.cpp Player.cpp Game.cpp $(CARD_SOURCES)
 CODE_HEADERS = $(subst .cpp,.h,$(CODE_SOURCES))
 CODE_OBJECTS = $(subst .cpp,.o,$(CODE_SOURCES))
-TEST_SOURCES = TestCards.cpp # Board/TestBoard.cpp TestGame.cpp
+TEST_SOURCES = TestGame.cpp # TestTrading.cpp TestCards.cpp Board/TestBoard.cpp
 TEST_OBJECTS = $(subst .cpp,.o,$(TEST_SOURCES))
 
 run: demo

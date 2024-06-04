@@ -20,5 +20,5 @@ void MonopolCard::play(Player& p, Game& g) {
 }
 
 string MonopolCard::toString() const {
-    return "Monopol";
+    return Constants::MONOPOL_CARD;
 }

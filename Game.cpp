@@ -12,7 +12,7 @@ void Game::placeSettlement(Player& p, bool first) {
     string line;
     char tile;
     *input >> tile >> line;
-    cout << "input: " << tile << " " << line << endl;
+    cout << "input: " << tile << " " << line << endl; // TODO delete
 
     if (tile < 'a' || tile > 's') throw std::invalid_argument("Invalid tile letter");
     Direction dire = Directions::stringToDirection(line);
@@ -52,7 +52,7 @@ void Game::placeRoad(Player& p, bool first) {
     string line;
     char tile;
     *input >> tile >> line;
-    cout << "input: " << tile << " " << line << endl;
+    cout << "input: " << tile << " " << line << endl; // TODO delete
 
     if (tile < 'a' || tile > 's') throw std::invalid_argument("Invalid tile letter");
     Direction dire = Directions::stringToDirection(line);
@@ -87,6 +87,7 @@ void Game::tradeResources(Player& p) {
     *input >> name;
     for (unsigned int i = 0; i < numPlayers(); i++) {
         if (players[i].getName() == name) {
+            players[i].printWallet();
             if (!players[i].canAfford(buy)) throw std::invalid_argument("Player cannot afford to buy");
             cout << players[i].getName() << " do you agree? (y/n)" << endl;
             *input >> line;
@@ -248,17 +249,31 @@ string Game::start() {
 
 void Game::loseResource() {
     for (unsigned int i = 0; i < numPlayers(); i++) {
-        if (i == currentPlayer) continue;
         unsigned int num = players[i].numResources();
         if (num < 7) continue;
         cout << players[i].getName() << " must lose half their resources" << endl;
-        players[i].loseHalf();
+
+        while (true) {
+            try {
+                vector<unsigned int> loss = namePrice();
+                if (!players[i].canAfford(loss))
+                    throw std::invalid_argument("Player cannot afford to lose resources");
+                unsigned int sum = 0;
+                for (unsigned int j = 0; j < loss.size(); j++) sum += loss[j];
+                if (sum < num/2) throw std::invalid_argument("Must lose half resources");
+
+                players[i].pay(loss);
+                break;
+            } catch (std::invalid_argument e) {
+                cout << e.what() << endl;
+            }
+        }
     }
 }
 
-void Game::startTurn(Player& p) {
+void Game::startTurn(Player& p, unsigned int overrideDiceNum) {
     cout << p.getName() << "'s turn" << endl;
-    unsigned int roll = rollDice();
+    unsigned int roll = rollDice(overrideDiceNum);
     cout << "Rolled " << roll << endl;
     if (roll != 7) board->produce(roll);
     else loseResource();
@@ -369,8 +384,8 @@ void Game::tradeCards(Player& p) {
                 return;
             }
             Card* sell = p.loseCard(sellIndex);
-            players[i].receiveCard(sell);
             Card* buy = players[i].loseCard(buyIndex);
+            players[i].receiveCard(sell);
             p.receiveCard(buy);
             return;
         }
@@ -394,14 +409,15 @@ void Game::tradeKnight(Player& p) {
     cout << "Enter player name" << endl;
     string name;
     *input >> name;
-    cout << "You are giving a knight for:" << endl;
-    vector<unsigned int> price = namePrice();
 
     for (unsigned int i = 0; i < numPlayers(); i++) {
         if (players[i].getName() == name) {
-            if (!players[i].canAfford(price))
-                throw std::invalid_argument("Player cannot afford to buy");
-
+            if (players[i].numCards() == 0)
+                throw std::invalid_argument("No cards to trade");
+            players[i].printCards();
+            cout << "Enter card index for buying" << endl;
+            unsigned int buyIndex;
+            *input >> buyIndex;
             cout << p.getName() << " do you agree? (y/n)" << endl;
             string line;
             *input >> line;
@@ -410,9 +426,9 @@ void Game::tradeKnight(Player& p) {
                 return;
             }
             p.loseKnight();
+            Card* card = players[i].loseCard(buyIndex);
             players[i].addKnight();
-            players[i].pay(price);
-            p.receiveResources(price);
+            p.receiveCard(card);
             return;
         }
     }

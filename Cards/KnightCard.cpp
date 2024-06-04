@@ -6,5 +6,5 @@ void KnightCard::play(Player& p, Game& g) {
 }
 
 string KnightCard::toString() const {
-    return "Knight";
+    return Constants::KNIGHT_CARD;
 }

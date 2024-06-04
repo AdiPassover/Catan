@@ -56,7 +56,7 @@ public:
     explicit Game(vector<string> names, bool random = true, const string& inputPath = "");
 
     string start();
-    void startTurn(Player&);
+    void startTurn(Player&, unsigned int overrideDiceNum = 0);
     Player* isOver();
 
     Turn chooseTurn();

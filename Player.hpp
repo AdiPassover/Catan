@@ -55,7 +55,6 @@ public:
     bool walletEquals(vector<unsigned int> resources) const;
     void pay(vector<unsigned int> resources);
     void pay(unsigned int product, unsigned int amount) { wallet[product] -= amount; }
-    void loseHalf();
 
     unsigned int numProducts(unsigned int product) const { return wallet[product]; }
     unsigned int numResources() const;
@@ -63,10 +62,13 @@ public:
     void receiveResources(vector<unsigned int> resources);
 
     void printCards() const;
-    void playCard(unsigned int i, Game& g) { cards[i]->play(*this, g); loseCard(i); }
+    void playCard(unsigned int i, Game& g)
+    { if (i >= numCards()) throw std::invalid_argument("Invalid index"); cards[i]->play(*this, g); loseCard(i); }
     void receiveCard(Card* c) { cards.push_back(c); }
     Card* loseCard(unsigned int i);
     unsigned int numCards() { return cards.size(); }
+    string cardName(unsigned int i)
+        { if (i >= numCards()) throw std::invalid_argument("Invalid index"); return cards[i]->toString(); }
 
 };
 

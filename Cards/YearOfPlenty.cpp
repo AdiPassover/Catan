@@ -14,5 +14,5 @@ void YearOfPlenty::play(Player& p, Game& g) {
 }
 
 string YearOfPlenty::toString() const {
-    return "Year of Plenty";
+    return Constants::YEAR_OF_PLENTY_CARD;
 }

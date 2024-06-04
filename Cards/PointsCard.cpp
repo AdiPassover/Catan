@@ -6,5 +6,5 @@ void PointsCard::play(Player& p, Game& g) {
 }
 
 string PointsCard::toString() const {
-    return "Points";
+    return Constants::POINTS_CARD;
 }

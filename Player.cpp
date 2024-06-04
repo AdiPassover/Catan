@@ -42,11 +42,6 @@ void Player::printCards() const {
     cout << endl;
 }
 
-void Player::loseHalf() {
-    for (unsigned int i = 0; i < wallet.size(); i++)
-        wallet[i] /= 2;
-}
-
 Card* Player::loseCard(unsigned int i) {
     if (i >= cards.size()) throw std::invalid_argument("Invalid card index");
     Card* ret = cards[i];

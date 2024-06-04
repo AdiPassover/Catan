@@ -41,6 +41,12 @@ namespace Constants {
     const vector<unsigned int> CITY_COST = {0, 0, 0, 2, 3};
     const vector<unsigned int> CARD_COST = {0, 0, 1, 1, 1};
 
+    const string KNIGHT_CARD = "Knight";
+    const string POINTS_CARD = "Points";
+    const string ROADS_CARD = "Roads";
+    const string MONOPOL_CARD = "Monopol";
+    const string YEAR_OF_PLENTY_CARD = "YearOfPlenty";
+
 }
 
 #endif //CATAN_CONSTANTS_HPP

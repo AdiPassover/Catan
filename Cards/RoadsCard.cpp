@@ -22,5 +22,5 @@ void RoadsCard::play(Player &player, Game &game) {
 }
 
 string RoadsCard::toString() const {
-    return "Roads";
+    return Constants::ROADS_CARD;
 }
