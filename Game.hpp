@@ -55,9 +55,9 @@ private:
 public:
     explicit Game(vector<string> names, bool random = true, const string& inputPath = "");
 
-    void start();
+    string start();
     void startTurn(Player&);
-    bool isOver();
+    Player* isOver();
 
     Turn chooseTurn();
     void makeTurn(Player&, Turn);
@@ -74,6 +74,9 @@ public:
     void playCard(Player&);
 
     void print() const;
+    std::istream* getInput() const { return input.get(); }
+    bool isRoadBuilt(char tile, Direction dir) const;
+
     unsigned int numPlayers() const;
     Player& getPlayer(unsigned int i);
 };

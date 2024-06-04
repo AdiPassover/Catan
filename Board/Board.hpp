@@ -12,6 +12,8 @@
 #include "Tiles/Mountains.hpp"
 #include "Tiles/Pasture.hpp"
 #include "../Player.hpp"
+#include "Buildings/Settlement.hpp"
+#include "Buildings/Road.hpp"
 
 using std::vector;
 using std::unique_ptr;

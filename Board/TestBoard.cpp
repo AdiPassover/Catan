@@ -101,8 +101,6 @@ TEST_CASE("Can place settlement") {
     board.upgradeSettlement(p2,'b',Direction::NorthWest);
     CHECK_FALSE(board.canUpgradeSettlement(p1,'b',Direction::NorthWest));
 
-    board.print();
-
 }
 
 TEST_CASE("Can place roads") {
@@ -112,7 +110,6 @@ TEST_CASE("Can place roads") {
     Player p2("2",Constants::BLUE);
 
     board.placeSettlement(p1,'a',Direction::South);
-    board.print();
     CHECK(board.canPlaceRoad(p1,'a',Direction::SouthEast));
     CHECK(board.canPlaceRoad(p1,'a',Direction::SouthWest));
     board.placeRoad(p1,'a',Direction::SouthWest);
@@ -126,6 +123,85 @@ TEST_CASE("Can place roads") {
     board.placeRoad(p2,'q',Direction::West);
     CHECK(board.canPlaceRoad(p2,'m',Direction::SouthWest));
     CHECK(board.canPlaceRoad(p2,'m',Direction::SouthEast));
-    board.print();
+
+}
+
+TEST_CASE("Test producing") {
+
+    Board board;
+    Player red("1",Constants::RED);
+    Player blue("2",Constants::BLUE);
+    Player green("3",Constants::GREEN);
+    Player yellow("4",Constants::YELLOW);
+
+    board.placeSettlement(red,'a',Direction::South);
+    board.placeSettlement(blue,'c',Direction::South);
+    board.placeSettlement(green,'e',Direction::South);
+    board.placeSettlement(yellow,'g',Direction::South);
+
+    board.produce(6);
+    CHECK(red.walletEquals({0,0,1,0,0}));
+    CHECK(blue.walletEquals({0,0,0,0,0}));
+    CHECK(green.walletEquals({0,0,1,0,0}));
+    CHECK(yellow.walletEquals({0,0,0,0,0}));
+
+    board.placeSettlement(red,'n',Direction::South);
+
+    board.produce(6);
+    CHECK(red.walletEquals({1,0,2,0,0}));
+    CHECK(blue.walletEquals({0,0,0,0,0}));
+    CHECK(green.walletEquals({0,0,2,0,0}));
+    CHECK(yellow.walletEquals({0,0,0,0,0}));
+
+    board.placeSettlement(green,'d',Direction::South);
+    board.upgradeSettlement(green,'d',Direction::South);
+    board.upgradeSettlement(blue,'c',Direction::South);
+
+    board.produce(9);
+    CHECK(red.walletEquals({1,0,2,0,0}));
+    CHECK(blue.walletEquals({0,0,0,2,0}));
+    CHECK(green.walletEquals({0,0,4,0,0}));
+    CHECK(yellow.walletEquals({0,0,0,0,0}));
+
+    board.placeSettlement(yellow,'s',Direction::South);
+    board.produce(11);
+    CHECK(red.walletEquals({1,0,2,0,0}));
+    CHECK(blue.walletEquals({0,0,0,2,0}));
+    CHECK(green.walletEquals({0,3,4,0,0}));
+    CHECK(yellow.walletEquals({1,0,0,0,0}));
+
+}
+
+TEST_CASE("Adding points") {
+
+    Board board;
+    Player red("1",Constants::RED);
+    Player blue("2",Constants::BLUE);
+    Player green("3",Constants::GREEN);
+    Player yellow("4",Constants::YELLOW);
+
+    board.placeSettlement(red,'a',Direction::South);
+    CHECK(red.getPoints() == 1);
+    board.placeSettlement(blue,'c',Direction::South);
+    CHECK(blue.getPoints() == 1);
+    board.placeSettlement(green,'e',Direction::South);
+    CHECK(green.getPoints() == 1);
+    board.placeSettlement(yellow,'g',Direction::South);
+    CHECK(yellow.getPoints() == 1);
+
+    board.placeSettlement(red,'n',Direction::South);
+    CHECK(red.getPoints() == 2);
+
+    board.placeSettlement(green,'d',Direction::South);
+    board.upgradeSettlement(green,'d',Direction::South);
+    board.upgradeSettlement(blue,'c',Direction::South);
+
+    CHECK((red.getPoints() == 2));
+    CHECK((blue.getPoints() == 2));
+    CHECK((green.getPoints() == 3));
+    CHECK((yellow.getPoints() == 1));
+
+    board.placeSettlement(yellow,'s',Direction::South);
+    CHECK(yellow.getPoints() == 2);
 
 }

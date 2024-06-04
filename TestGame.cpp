@@ -5,5 +5,6 @@
 #include "Game.hpp"
 
 TEST_CASE("test game") {
-    Game game({"Blue", "Red", "Green"}, false, "input1.txt");
+    Game game({"Blue", "Red", "Green"}, false,"inputGame.txt");
+    CHECK(game.start() == "Blue");
 }

@@ -1,0 +1,20 @@
+a south
+a southwest
+g south
+l west
+m north
+i southeast
+i southst
+i sasdadfsdfaf
+i southwest
+p southwest
+o south
+o southeast
+c south
+f east
+b south
+b southeast
+build
+road
+b east
+end

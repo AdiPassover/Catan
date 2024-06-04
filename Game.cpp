@@ -190,7 +190,7 @@ void Game::makeTurn(Player& p, Turn t) {
     }
 }
 
-void Game::start() {
+string Game::start() {
     for (unsigned int i = 0; i < numPlayers(); i++) {
         while (true) {
             try {
@@ -237,6 +237,13 @@ void Game::start() {
         board->produce(i);
     }
 
+    while (true) {
+        startTurn(players[currentPlayer]);
+        currentPlayer++;
+        currentPlayer %= numPlayers();
+        Player* p = isOver();
+        if (p != nullptr) return p->getName();
+    }
 }
 
 void Game::loseResource() {
@@ -265,14 +272,14 @@ void Game::startTurn(Player& p) {
     print();
 }
 
-bool Game::isOver() {
+Player* Game::isOver() {
     for (unsigned int i = 0; i < numPlayers(); i++) {
         if (players[i].getPoints() >= 10) {
             cout << players[i].getName() << " wins!" << endl;
-            return true;
+            return &players[i];
         }
     }
-    return false;
+    return nullptr;
 }
 
 Game::Game(vector<string> names, bool random, const string& inputPath) : players(), deck(), isRandom(random) {
@@ -301,14 +308,6 @@ Game::Game(vector<string> names, bool random, const string& inputPath) : players
     }
     print();
     initDeck();
-
-    start();
-    while (true) {
-        startTurn(players[currentPlayer]);
-        currentPlayer++;
-        currentPlayer %= numPlayers();
-        if (isOver()) break;
-    }
 }
 
 void Game::print() const {
@@ -417,4 +416,8 @@ void Game::tradeKnight(Player& p) {
             return;
         }
     }
+}
+
+bool Game::isRoadBuilt(char tile, Direction dir) const {
+    return board->getTile(tile)->getRoad(dir)->isBuilt();
 }

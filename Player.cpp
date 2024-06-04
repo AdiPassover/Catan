@@ -54,8 +54,19 @@ Card* Player::loseCard(unsigned int i) {
     return ret;
 }
 
+void Player::addKnight() {
+    numKnights++;
+    if (numKnights == 3) points += 2;
+}
+
 void Player::loseKnight() {
     if (numKnights == 0) throw std::invalid_argument("No knights to lose");
     if (numKnights == 3) points -= 2;
     numKnights--;
+}
+
+bool Player::walletEquals(vector<unsigned int> resources) const {
+    for (size_t i = 0; i < resources.size(); i++)
+        if (wallet[i] != resources[i]) return false;
+    return true;
 }

@@ -5,11 +5,12 @@
 #include <vector>
 #include <memory>
 #include <stdexcept>
-#include "../Buildings/Settlement.hpp"
-#include "../Buildings/Road.hpp"
 #include "direction.hpp"
 #include "../../Constants.hpp"
 
+class Settlement;
+class Road;
+class Player;
 using std::vector;
 using std::unique_ptr;
 using std::make_unique;

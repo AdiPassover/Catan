@@ -48,10 +48,11 @@ public:
     void addPoints(unsigned int p) { points += p; }
     void losePoints(unsigned int p) { if (points < p) throw std::invalid_argument("No points"); points -= p; }
 
-    void addKnight() { numKnights++; }
+    void addKnight();
     void loseKnight();
 
     bool canAfford(vector<unsigned int> resources) const;
+    bool walletEquals(vector<unsigned int> resources) const;
     void pay(vector<unsigned int> resources);
     void pay(unsigned int product, unsigned int amount) { wallet[product] -= amount; }
     void loseHalf();
