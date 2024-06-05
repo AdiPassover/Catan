@@ -1,8 +1,8 @@
 // 326627635 | adi.peisach@gmail.com
 
 //#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "../doctest.h"
-#include "Board.hpp"
+#include "doctest.h"
+#include "../Board/Board.hpp"
 
 TEST_CASE("Placing and upgrading settlements") {
 

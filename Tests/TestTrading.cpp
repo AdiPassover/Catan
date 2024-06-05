@@ -1,7 +1,7 @@
 // 326627635 | adi.peisach@gmail.com
 
 #include "doctest.h"
-#include "Game.hpp"
+#include "../Game.hpp"
 
 TEST_CASE("Test resource trading") {
     Game game({"Blue", "Red", "Green"}, false,"TestInputs/inputTrading1.txt");

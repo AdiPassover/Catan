@@ -1,7 +1,7 @@
 // 326627635 | adi.peisach@gmail.com
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest.h"
-#include "Constants.hpp"
+#include "../Constants.hpp"
 using namespace doctest;
 
 int return_code = -1;

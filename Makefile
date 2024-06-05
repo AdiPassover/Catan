@@ -11,7 +11,7 @@ TILES_SOURCES = Board/Tiles/Field.cpp Board/Tiles/Forest.cpp Board/Tiles/Mine.cp
 CODE_SOURCES = $(BUILDING_SOURCES) $(TILES_SOURCES) Board/Board.cpp Player.cpp Game.cpp $(CARD_SOURCES)
 CODE_HEADERS = $(subst .cpp,.h,$(CODE_SOURCES))
 CODE_OBJECTS = $(subst .cpp,.o,$(CODE_SOURCES))
-TEST_SOURCES = TestGameFunctions.cpp TestTrading.cpp TestCards.cpp Board/TestBoard.cpp
+TEST_SOURCES = Tests/TestGameFunctions.cpp Tests/TestTrading.cpp Tests/TestCards.cpp Tests/TestBoard.cpp
 TEST_OBJECTS = $(subst .cpp,.o,$(TEST_SOURCES))
 
 catan: demo
@@ -25,13 +25,13 @@ demo: $(CODE_OBJECTS) Demo.cpp
 testfull: testFullMake
 	./testFull
 
-testFullMake: TestGame.o $(CODE_OBJECTS)
+testFullMake: Tests/TestGame.o $(CODE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o testFull -lstdc++ -lm $(DOCTEST_INCLUDE)
 
 test: testMake
 	./test
 
-testMake: TestCounter.o $(TEST_OBJECTS) $(CODE_OBJECTS)
+testMake: Tests/TestCounter.o $(TEST_OBJECTS) $(CODE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o test -lstdc++ -lm $(DOCTEST_INCLUDE)
 
 tidy:
@@ -49,4 +49,4 @@ valgrind: demo testMake
 	$(CXX) $(CXXFLAGS) --compile $< -o $@
 
 clean:
-	rm -f *.o demo test testFull Cards/*.o Board/Buildings/*.o Board/Tiles/*.o Board/*.o
+	rm -f *.o demo test testFull Cards/*.o Board/Buildings/*.o Board/Tiles/*.o Board/*.o Tests/*.o

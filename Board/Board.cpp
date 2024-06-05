@@ -127,8 +127,8 @@ void Board::drawTop(unsigned int index, vector<vector<string>>& mat, unsigned in
         mat[topI+4][topJ] = std::to_string(TILES_NUMBERS[index]);
     }
     else {
-        mat[topI+4][topJ] = std::to_string(TILES_NUMBERS[index])[0];
-        mat[topI+4][topJ+1] = std::to_string(TILES_NUMBERS[index])[1];
+        mat[topI+4][topJ] = std::to_string(TILES_NUMBERS[index]);
+        mat[topI+4][topJ+1] = "";
     }
 
 }
@@ -230,7 +230,7 @@ bool Board::canPlaceSettlement(Player& p, char tile, Direction direction) const 
     char tile3 = DIRECTION_TILES[(unsigned int)(int)(nearRoads[1])][index];
     Direction d3 = Directions::sumSet(Directions::opposite(direction),1);
 
-    if (tiles[index]->getRoad(nearRoads[0])->getOwner() != &p && // TODO maybe convert to function
+    if (tiles[index]->getRoad(nearRoads[0])->getOwner() != &p &&
         tiles[index]->getRoad(nearRoads[1])->getOwner() != &p) {
         if (tile2=='x' && tile3=='x') return false;
         if (tile2!='x') {

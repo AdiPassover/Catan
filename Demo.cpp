@@ -1,14 +1,10 @@
 // 326627635 | adi.peisach@gmail.com
-#include <iostream>
 #include "Game.hpp"
 
-using std::cout;
-using std::cin;
-using std::endl;
-
 int main() {
+    srand(time(nullptr));
     vector<string> players = {"Blue", "Red", "Green"};
-    Game game(players,true);
+    Game game(players);
     game.start();
 
     return 0;

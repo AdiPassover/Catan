@@ -1,7 +1,7 @@
 // 326627635 | adi.peisach@gmail.com
 
 //#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "Player.hpp"
+#include "../Player.hpp"
 #include "doctest.h"
 
 TEST_CASE("Using knights and points") {

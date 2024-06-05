@@ -3,7 +3,7 @@
 #include "../Buildings/Settlement.hpp"
 #include "../Buildings/Road.hpp"
 
-void Tile::produce() { // TODO check what happens when this is not virtual
+void Tile::produce() {
     for (size_t i = 0; i < settlements.size(); i++) {
         settlements[i]->receiveProducts(product);
     }

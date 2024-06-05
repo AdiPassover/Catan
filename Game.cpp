@@ -12,7 +12,6 @@ void Game::placeSettlement(Player& p, bool first) {
     string line;
     char tile;
     *input >> tile >> line;
-    cout << "input: " << tile << " " << line << endl; // TODO delete
 
     if (tile < 'a' || tile > 's') throw std::invalid_argument("Invalid tile letter");
     Direction dire = Directions::stringToDirection(line);
@@ -54,7 +53,6 @@ void Game::placeRoad(Player& p, bool first) {
     string line;
     char tile;
     *input >> tile >> line;
-    cout << "input: " << tile << " " << line << endl; // TODO delete
 
     if (tile < 'a' || tile > 's') throw std::invalid_argument("Invalid tile letter");
     Direction dire = Directions::stringToDirection(line);
