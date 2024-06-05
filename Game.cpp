@@ -106,6 +106,8 @@ void Game::tradeResources(Player& p) {
 }
 
 void Game::buyCard(Player& p) {
+    if (currentCard == deck.size())
+        throw std::invalid_argument("No more cards to buy");
     if (!p.canAfford(Constants::CARD_COST))
         throw std::invalid_argument("Player cannot afford to buy card");
     p.pay(Constants::CARD_COST);
@@ -251,7 +253,8 @@ void Game::loseResource() {
     for (unsigned int i = 0; i < numPlayers(); i++) {
         unsigned int num = players[i].numResources();
         if (num < 7) continue;
-        cout << players[i].getName() << " must lose half their resources" << endl;
+        cout << players[i].getName() << " must lose half their resources: " << num/2 << endl;
+        players[i].printWallet();
 
         while (true) {
             try {
@@ -278,8 +281,8 @@ void Game::startTurn(Player& p, unsigned int overrideDiceNum) {
     if (roll != 7) board->produce(roll);
     else loseResource();
 
-    p.printWallet();
     while (true) {
+        p.printWallet();
         Turn t = chooseTurn();
         if (t == Turn::EndTurn) break;
         makeTurn(p, t);

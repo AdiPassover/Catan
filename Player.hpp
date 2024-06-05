@@ -66,7 +66,7 @@ public:
     { if (i >= numCards()) throw std::invalid_argument("Invalid index"); cards[i]->play(*this, g); loseCard(i); }
     void receiveCard(Card* c) { cards.push_back(c); }
     Card* loseCard(unsigned int i);
-    unsigned int numCards() { return cards.size(); }
+    unsigned int numCards() const { return cards.size(); }
     string cardName(unsigned int i)
         { if (i >= numCards()) throw std::invalid_argument("Invalid index"); return cards[i]->toString(); }
 

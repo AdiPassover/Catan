@@ -27,7 +27,7 @@ unsigned int Player::numResources() const {
 }
 
 void Player::printWallet() const {
-    cout << color << "Points: " << points << " Knights: " << numKnights << Constants::RESET << endl;
+    cout << color << "Points: " << points << " Knights: " << numKnights << " Cards: " << numCards() << Constants::RESET << endl;
     cout << Constants::RESOURCES_ICONS << endl;
     cout << color;
     for (size_t i = 0; i < wallet.size(); i++)
