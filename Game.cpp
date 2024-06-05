@@ -19,11 +19,12 @@ void Game::placeSettlement(Player& p, bool first) {
 
     if (!first && !p.canAfford(Constants::SETTLEMENT_COST))
         throw std::invalid_argument("Player cannot afford to place settlement");
-    if (!first) p.pay(Constants::SETTLEMENT_COST);
 
 
-    if (!first && board->canPlaceSettlement(p, tile, dire))
+    if (!first && board->canPlaceSettlement(p, tile, dire)) {
+        p.pay(Constants::SETTLEMENT_COST);
         board->placeSettlement(p, tile, dire);
+    }
     else if (first && board->canPlaceFirstSettlement(tile, dire))
         board->placeSettlement(p, tile, dire);
     else throw std::invalid_argument("Cannot place settlement");
@@ -40,10 +41,11 @@ void Game::upgradeSettlement(Player& p) {
 
     if (!p.canAfford(Constants::CITY_COST))
         throw std::invalid_argument("Player cannot afford to upgrade settlement");
-    p.pay(Constants::CITY_COST);
 
-    if (board->canUpgradeSettlement(p, tile, dire))
+    if (board->canUpgradeSettlement(p, tile, dire)) {
+        p.pay(Constants::CITY_COST);
         board->upgradeSettlement(p, tile, dire);
+    }
     else throw std::invalid_argument("Cannot upgrade settlement");
 }
 
@@ -59,10 +61,11 @@ void Game::placeRoad(Player& p, bool first) {
 
     if (!first && !p.canAfford(Constants::ROAD_COST))
         throw std::invalid_argument("Player cannot afford to place road");
-    if (!first) p.pay(Constants::ROAD_COST);
 
-    if (board->canPlaceRoad(p, tile, dire))
+    if (board->canPlaceRoad(p, tile, dire)) {
+        if (!first) p.pay(Constants::ROAD_COST);
         board->placeRoad(p, tile, dire);
+    }
     else throw std::invalid_argument("Cannot place road");
 }
 
@@ -435,6 +438,14 @@ void Game::tradeKnight(Player& p) {
             return;
         }
     }
+}
+
+bool Game::isCityBuilt(char tile, Direction dir) const {
+    return board->getTile(tile)->getSettlement(dir)->getLevel() == 2;
+}
+
+bool Game::isSettlementBuilt(char tile, Direction dir) const {
+    return board->getTile(tile)->getSettlement(dir)->isBuilt();
 }
 
 bool Game::isRoadBuilt(char tile, Direction dir) const {

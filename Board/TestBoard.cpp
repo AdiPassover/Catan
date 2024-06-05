@@ -1,6 +1,6 @@
 // 326627635 | adi.peisach@gmail.com
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+//#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "../doctest.h"
 #include "Board.hpp"
 

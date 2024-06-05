@@ -11,10 +11,10 @@ TILES_SOURCES = Board/Tiles/Field.cpp Board/Tiles/Forest.cpp Board/Tiles/Mine.cp
 CODE_SOURCES = $(BUILDING_SOURCES) $(TILES_SOURCES) Board/Board.cpp Player.cpp Game.cpp $(CARD_SOURCES)
 CODE_HEADERS = $(subst .cpp,.h,$(CODE_SOURCES))
 CODE_OBJECTS = $(subst .cpp,.o,$(CODE_SOURCES))
-TEST_SOURCES = TestGame.cpp # TestTrading.cpp TestCards.cpp Board/TestBoard.cpp
+TEST_SOURCES = TestGameFunctions.cpp TestTrading.cpp TestCards.cpp Board/TestBoard.cpp
 TEST_OBJECTS = $(subst .cpp,.o,$(TEST_SOURCES))
 
-run: demo
+catan: demo
 	./$^
 
 all: demo testMake
@@ -22,10 +22,16 @@ all: demo testMake
 demo: $(CODE_OBJECTS) Demo.cpp
 	$(CXX) $(CXXFLAGS) $^ -o demo -lstdc++
 
+testfull: testFullMake
+	./testFull
+
+testFullMake: TestGame.o $(CODE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o testFull -lstdc++ -lm $(DOCTEST_INCLUDE)
+
 test: testMake
 	./test
 
-testMake: $(TEST_OBJECTS) $(CODE_OBJECTS)
+testMake: TestCounter.o $(TEST_OBJECTS) $(CODE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o test -lstdc++ -lm $(DOCTEST_INCLUDE)
 
 tidy:
@@ -36,11 +42,11 @@ tidy:
         -extra-arg=-Wno-shorten-64-to-32
 
 valgrind: demo testMake
-	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./demo 2>&1 | { egrep "lost| at " || true; }
 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
+	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./testFull 2>&1 | { egrep "lost| at " || true; }
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) --compile $< -o $@
 
 clean:
-	rm -f *.o demo test Cards/*.o Board/Buildings/*.o Board/Tiles/*.o Board/*.o
+	rm -f *.o demo test testFull Cards/*.o Board/Buildings/*.o Board/Tiles/*.o Board/*.o

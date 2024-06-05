@@ -51,13 +51,13 @@ private:
     vector<unsigned int> namePrice() const;
     void loseResource();
     void initDeck();
+    Player* isOver();
 
 public:
     explicit Game(vector<string> names, bool random = true, const string& inputPath = "");
 
     string start();
     void startTurn(Player&, unsigned int overrideDiceNum = 0);
-    Player* isOver();
 
     Turn chooseTurn();
     void makeTurn(Player&, Turn);
@@ -75,6 +75,8 @@ public:
 
     void print() const;
     std::istream* getInput() const { return input.get(); }
+    bool isCityBuilt(char tile, Direction dir) const;
+    bool isSettlementBuilt(char tile, Direction dir) const;
     bool isRoadBuilt(char tile, Direction dir) const;
 
     unsigned int numPlayers() const;
