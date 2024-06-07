@@ -119,7 +119,7 @@ The project contains multiple tests that test the game logic and the game flow. 
 - `TestGameFunctions` - tests the game logic
 - `TestTrading` - tests the trading logic
 
-These tests are run when calling `make test` through `TestConter.cpp` that shows how many test passed and failed.
+These tests are run when calling `make test` through `TestCounter.cpp` that shows how many test passed and failed.
 All of these tests use txt files to simulate the input and output of the game from the directory `TestInputs`.
 
 In addition, `TestGame` is a test that runs a full game and checks if the game ends correctly. You can run it by calling
