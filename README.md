@@ -31,7 +31,11 @@ In order to enter a price, you will have to choose how much of each resource you
 
     1 0 0 2 0
 
-Other than that, the instructions are pretty clear in the game.
+Other than that, the instructions are pretty clear in the game:
+
+At each turn, you will roll a dice and the board will produce resources (and if 7 was rolled every player with 7 or more resources will have to
+lose half of his resources). After that, you can place settlements and roads, upgrade to cities, buy or play cards, trade with other players
+as many times as you want until you end your turn by typing `end`.
 
 
 ## Project structure
@@ -124,3 +128,8 @@ All of these tests use txt files to simulate the input and output of the game fr
 
 In addition, `TestGame` is a test that runs a full game and checks if the game ends correctly. You can run it by calling
 `make testfull`.
+
+## Libraries used
+
+Other than the standard libraries (string, iostream, vector...), I've also used unqie_ptr (also from the standard library)
+in order to manage memory easily.
